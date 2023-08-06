@@ -24,17 +24,23 @@ public class Main {
         Long subtaskId2 = taskTracker.addNewSubtask(subtask2);
         Long subtaskID3 = taskTracker.addNewSubtask(subtask3);
 
-        System.out.println(taskTracker.getTaskHashMap().toString());
-        System.out.println(taskTracker.getEpicHashMap().toString());
-        System.out.println(taskTracker.getSubtaskHashMap().toString());
+        System.out.println(taskTracker.getTaskById(task1Id).toString());
+        System.out.println(taskTracker.getEpicById(epic1Id).toString());
+        System.out.println(taskTracker.getSubtaskById(subtaskId1).toString());
+
+        System.out.println(taskTracker.getTaskList().toString());
+        System.out.println(taskTracker.getEpicList().toString());
+        System.out.println(taskTracker.getSubtaskList().toString());
+
+        taskTracker.getSubtaskById(subtaskId2);
 
         taskTracker.getSubtasksOfEpic(epic1);
 
-        taskTracker.removeTaskUseId(task2Id);
-        System.out.println(taskTracker.getTaskHashMap().toString());
+        taskTracker.removeTaskById(task2Id);
+        taskTracker.removeSubtaskById(subtaskId1);
+        System.out.println(taskTracker.getTaskList().toString());
 
-        taskTracker.removeEpicUseId(epic1Id);
-        System.out.println(taskTracker.getEpicHashMap().toString());
-        System.out.println(taskTracker.getSubtaskHashMap().toString());
+        taskTracker.removeEpicById(epic1Id);
+
     }
 }

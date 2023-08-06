@@ -6,25 +6,23 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TaskTracker {
 
     private HashMap<Long, Task> taskHashMap = new HashMap<>();
     private HashMap<Long, Epic> epicHashMap = new HashMap<>();
     private HashMap<Long, Subtask> subtaskHashMap = new HashMap<>();
-    private long generationId = 0;
-
-    private long generationId() {
-        return generationId++;
-    }
+    private long generateId = 0;
 
     public long addNewTask(Task task) {
-        task.setId(generationId());
+        task.setId(generateId());
         taskHashMap.put(task.getId(), task);
         return task.getId();
     }
+
     public long addNewEpic(Epic epic) {
-        epic.setId(generationId());
+        epic.setId(generateId());
         epicHashMap.put(epic.getId(), epic);
         return epic.getId();
     }
@@ -35,7 +33,7 @@ public class TaskTracker {
             return null;
         }
 
-        subtask.setId(generationId());
+        subtask.setId(generateId());
         subtaskHashMap.put(subtask.getId(), subtask);
         epic.addSubtaskId(subtask.getId());
         updateEpicStatus(subtask.getEpicId());
@@ -43,19 +41,75 @@ public class TaskTracker {
         return subtask.getId();
     }
 
-    public HashMap<Long, Task> getTaskHashMap() {
-        return taskHashMap;
+    public ArrayList<Task> getTaskList() {
+        return new ArrayList(taskHashMap.values());
     }
 
-    public HashMap<Long, Epic> getEpicHashMap() {
-        return epicHashMap;
+    public ArrayList<Epic> getEpicList() {
+        return new ArrayList(epicHashMap.values());
     }
 
-    public HashMap<Long, Subtask> getSubtaskHashMap() {
-        return subtaskHashMap;
+    public ArrayList<Subtask> getSubtaskList() {
+        return new ArrayList(subtaskHashMap.values());
     }
 
-    private void updateTask(Task task) {
+    public void removeTaskById(long taskId) {
+        Task removeTask = taskHashMap.get(taskId);
+        taskHashMap.remove(removeTask.getId(),removeTask);
+    }
+
+    public void removeEpicById(long epicId) {
+        Epic removeEpic = epicHashMap.get(epicId);
+        ArrayList<Long> subtaskIds = removeEpic.getSubtaskIds();
+
+        for (long subtaskId : subtaskIds) {
+            Subtask subtask = subtaskHashMap.get(subtaskId);
+            subtaskHashMap.remove(subtask.getId(),subtask);
+        }
+        epicHashMap.remove(removeEpic.getId(),removeEpic);
+    }
+
+    public void removeSubtaskById(long subtaskId) {
+        Subtask removeSubtask = subtaskHashMap.get(subtaskId);
+        Epic epicOfRemoveSubtask = epicHashMap.get(removeSubtask.getEpicId());
+
+        ArrayList<Long> subtaskIds = epicOfRemoveSubtask.getSubtaskIds();
+        subtaskIds.remove(removeSubtask.getId());
+
+        epicOfRemoveSubtask.setSubtaskIds(subtaskIds);
+        epicHashMap.put(epicOfRemoveSubtask.getId(),epicOfRemoveSubtask);
+
+        subtaskHashMap.remove(removeSubtask.getId(),removeSubtask);
+        updateEpicStatus(epicOfRemoveSubtask.getId());
+    }
+
+    public void getSubtasksOfEpic(Epic epic) {
+        if (epic != null) {
+            ArrayList<Long> subtaskIDs = epic.getSubtaskIds();
+
+            for (long subtaskId : subtaskIDs) {
+                Subtask subtask = subtaskHashMap.get(subtaskId);
+                System.out.println(subtask.toString());
+            }
+        }
+
+    }
+
+    public Task getTaskById(long taskId) {
+        Task task = taskHashMap.get(taskId);
+        return task;
+    }
+
+    public Epic getEpicById(long epicId) {
+        Epic epic = epicHashMap.get(epicId);
+        return epic;
+    }
+
+    public Subtask getSubtaskById(long subtaskId) {
+            return subtaskHashMap.get(subtaskId);
+    }
+
+    public void updateTask(Task task) {
         Task saveTask = taskHashMap.get(task.getId());
         if (saveTask == null) {
             return;
@@ -63,7 +117,7 @@ public class TaskTracker {
         taskHashMap.put(task.getId(), task);
     }
 
-    private void updateEpic(Epic epic) {
+    public void updateEpic(Epic epic) {
         Epic saveEpic = epicHashMap.get(epic.getId());
         if(saveEpic == null) {
             return;
@@ -71,7 +125,7 @@ public class TaskTracker {
         epicHashMap.put(epic.getId(),epic);
     }
 
-    private void updateSubtask(Subtask subtask) {
+    public void updateSubtask(Subtask subtask) {
         Subtask saveSubtask = subtaskHashMap.get(subtask.getId());
         if (saveSubtask == null) {
             return;
@@ -80,29 +134,8 @@ public class TaskTracker {
         updateEpicStatus(subtask.getEpicId());
     }
 
-    public void removeTaskUseId(long taskId) {
-        Task removeTask = taskHashMap.get(taskId);
-        taskHashMap.remove(removeTask.getId(),removeTask);
-    }
-
-    public void removeEpicUseId(long epicId) {
-        Epic removeEpic = epicHashMap.get(epicId);
-        ArrayList<Long> subtaskIds = removeEpic.getSubtaskIds();
-
-
-        for (long subtaskId : subtaskIds) {
-            Subtask subtask = subtaskHashMap.get(subtaskId);
-
-            if (subtask.getEpicId() == epicId) {
-                subtaskHashMap.remove(subtask.getId(),subtask);
-            }
-        }
-        epicHashMap.remove(removeEpic.getId(),removeEpic);
-    }
-
-    public void removeSubtaskUseID(long subtaskId) {
-        Subtask removeSubtask = subtaskHashMap.get(subtaskId);
-        subtaskHashMap.remove(removeSubtask.getId(),removeSubtask);
+    private long generateId() {
+        return generateId++;
     }
 
     private void updateEpicStatus(long epicId) {
@@ -124,7 +157,7 @@ public class TaskTracker {
             }
 
             if (status.equals(subtask.getStatus())
-            && !status.equals("IN_PROGRESS")) {
+                    && !status.equals("IN_PROGRESS")) {
                 continue;
             }
 
@@ -134,17 +167,4 @@ public class TaskTracker {
 
         epic.setStatus(status);
     }
-
-    public void getSubtasksOfEpic(Epic epic) {
-        if (epic != null) {
-            ArrayList<Long> subtaskIDs = epic.getSubtaskIds();
-
-            for (long subtaskId : subtaskIDs) {
-                Subtask subtask = subtaskHashMap.get(subtaskId);
-                System.out.println(subtask.toString());
-            }
-        }
-
-    }
-
 }

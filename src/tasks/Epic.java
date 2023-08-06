@@ -18,6 +18,10 @@ public class Epic extends Task {
         subtaskIds.add(subtaskId);
     }
 
+    public void setSubtaskIds(ArrayList<Long> subtaskIds) {
+        this.subtaskIds = subtaskIds;
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
