@@ -1,8 +1,8 @@
-package manager;
+package taskmanager.manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
+import taskmanager.tasks.Epic;
+import taskmanager.tasks.Subtask;
+import taskmanager.tasks.Task;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ public interface TaskManager {
     void removeSubtaskById(long subtaskId);
 
     void getSubtasksOfEpic(Epic epic);
+
     Task getTaskById(long taskId);
 
     Epic getEpicById(long epicId);

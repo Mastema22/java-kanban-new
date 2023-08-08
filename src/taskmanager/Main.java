@@ -1,8 +1,10 @@
-import manager.InMemoryTaskManager;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.Status;
+package taskmanager;
+
+import taskmanager.manager.InMemoryTaskManager;
+import taskmanager.tasks.Epic;
+import taskmanager.tasks.Subtask;
+import taskmanager.tasks.Task;
+import taskmanager.tasks.Status;
 
 public class Main {
     public static void main(String[] args) {
