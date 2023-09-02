@@ -1,5 +1,6 @@
 package taskmanager;
 
+import taskmanager.manager.InMemoryHistoryManager;
 import taskmanager.manager.InMemoryTaskManager;
 import taskmanager.tasks.Epic;
 import taskmanager.tasks.Subtask;
@@ -10,6 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
 
 
         Task task1 = new Task("Купить хлеб", "Описание", Status.NEW);
@@ -49,6 +51,18 @@ public class Main {
 
         inMemoryTaskManager.removeEpicById(epic1Id);
         System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println(inMemoryHistoryManager.getHistory());
+
+        inMemoryHistoryManager.add(task1);
+        System.out.println(inMemoryHistoryManager.getHistory());
+        inMemoryHistoryManager.add(task2);
+        System.out.println(inMemoryHistoryManager.getHistory());
+        inMemoryHistoryManager.remove(task1Id);
+        System.out.println(inMemoryHistoryManager.getHistory());
+        inMemoryHistoryManager.add(epic1);
+        System.out.println(inMemoryHistoryManager.getHistory());
+        inMemoryHistoryManager.remove(epic1Id);
+        System.out.println(inMemoryHistoryManager.getHistory());
 
     }
 }
