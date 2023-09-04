@@ -1,6 +1,5 @@
 package taskmanager;
 
-import taskmanager.manager.InMemoryHistoryManager;
 import taskmanager.manager.InMemoryTaskManager;
 import taskmanager.tasks.Epic;
 import taskmanager.tasks.Subtask;
@@ -11,7 +10,6 @@ public class Main {
     public static void main(String[] args) {
 
         InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-        InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
 
 
         Task task1 = new Task("Купить хлеб", "Описание", Status.NEW);
@@ -24,8 +22,8 @@ public class Main {
         long epic1Id = inMemoryTaskManager.addNewEpic(epic1);
         long epic2Id = inMemoryTaskManager.addNewEpic(epic2);
 
-        Subtask subtask1 = new Subtask("Выбрать машину", "Описание",Status.NEW, epic1Id);
-        Subtask subtask2 = new Subtask("Взять креди на машину", "Описание",Status.IN_PROGRESS, epic1Id);
+        Subtask subtask1 = new Subtask("Выбрать машину", "Описание", Status.NEW, epic1Id);
+        Subtask subtask2 = new Subtask("Взять креди на машину", "Описание", Status.IN_PROGRESS, epic1Id);
         Subtask subtask3 = new Subtask("Выбрать книгу", "Описание", Status.DONE, epic2Id);
         Long subtaskId1 = inMemoryTaskManager.addNewSubtask(subtask1);
         Long subtaskId2 = inMemoryTaskManager.addNewSubtask(subtask2);
@@ -49,20 +47,6 @@ public class Main {
         inMemoryTaskManager.removeSubtaskById(subtaskId1);
         System.out.println(inMemoryTaskManager.getTaskList().toString());
 
-        inMemoryTaskManager.removeEpicById(epic1Id);
-        System.out.println(inMemoryTaskManager.getHistory());
-        System.out.println(inMemoryHistoryManager.getHistory());
-
-        inMemoryHistoryManager.add(task1);
-        System.out.println(inMemoryHistoryManager.getHistory());
-        inMemoryHistoryManager.add(task2);
-        System.out.println(inMemoryHistoryManager.getHistory());
-        inMemoryHistoryManager.remove(task1Id);
-        System.out.println(inMemoryHistoryManager.getHistory());
-        inMemoryHistoryManager.add(epic1);
-        System.out.println(inMemoryHistoryManager.getHistory());
-        inMemoryHistoryManager.remove(epic1Id);
-        System.out.println(inMemoryHistoryManager.getHistory());
-
     }
+
 }

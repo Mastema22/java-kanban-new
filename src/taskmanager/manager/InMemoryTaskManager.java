@@ -49,15 +49,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public ArrayList<Task> getTaskList() {
-        return new ArrayList(taskHashMap.values());
+        return new ArrayList<>(taskHashMap.values());
     }
 
     public ArrayList<Epic> getEpicList() {
-        return new ArrayList(epicHashMap.values());
+        return new ArrayList<>(epicHashMap.values());
     }
 
     public ArrayList<Subtask> getSubtaskList() {
-        return new ArrayList(subtaskHashMap.values());
+        return new ArrayList<>(subtaskHashMap.values());
     }
 
     @Override
