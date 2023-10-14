@@ -1,2 +1,7 @@
-package taskmanager.tasks;public enum TaskType {
+package taskmanager.tasks;
+
+public enum TaskType {
+        TASK,
+        EPIC,
+        SUBTASK
 }

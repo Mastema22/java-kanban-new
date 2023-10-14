@@ -1,12 +1,14 @@
 package taskmanager.tasks;
 
-import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Task {
-    protected Long id;
+    protected int id;
     protected String name;
     protected String description;
     protected Status status;
+    protected long duration;
+    protected LocalDateTime startTime;
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -14,7 +16,36 @@ public class Task {
         this.status = status;
     }
 
-    public Long getId() {
+    public Task(String name, String description, Status status, long duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        long seconds = 60L;
+        return startTime.plusSeconds(seconds);
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -30,16 +61,8 @@ public class Task {
         return status;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setStatus(Status status) {
@@ -49,11 +72,15 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status='" + getStatus() + '\'' +
+                ", start time='" + getStartTime() +'\'' +
+                ", duration='" + getDuration() +'\'' +
+                ", end time'" + getEndTime() +'\'' +
                 '}';
+
     }
 
     @Override
@@ -61,11 +88,20 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(id, task.id) && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(status, task.status);
+        return id == task.id &&
+                (name != null && name.equals(task.name)) &&
+                (description != null && description.equals(task.description))
+                && (status != null && status.equals(task.status));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, status);
+        final int prime = 31;
+        int result = 1;
+        result = (int) (prime * result + id);
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        return result;
     }
 }

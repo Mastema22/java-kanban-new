@@ -4,29 +4,35 @@ import taskmanager.tasks.Epic;
 import taskmanager.tasks.Subtask;
 import taskmanager.tasks.Task;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
+    Task addNewTask(Task task);
 
-    long addNewTask(Task task);
+    Epic addNewEpic(Epic epic);
 
-    long addNewEpic(Epic epic);
+    Subtask addNewSubtask(Subtask subtask);
 
-    Long addNewSubtask(Subtask subtask);
+    HashMap<Integer, Task> getTaskList();
 
-    void removeTaskById(long taskId);
+    HashMap<Integer, Epic> getEpicList();
 
-    void removeEpicById(long epicId);
+    HashMap<Integer, Subtask> getSubtaskList();
 
-    void removeSubtaskById(long subtaskId);
+    void removeTaskById(int taskId);
 
-    void getSubtasksOfEpic(Epic epic);
+    void removeEpicById(int epicId);
 
-    Task getTaskById(long taskId);
+    void removeSubtaskById(int subtaskId);
 
-    Epic getEpicById(long epicId);
+    Subtask getSubtasksOfEpic(Epic epic);
 
-    Subtask getSubtaskById(long subtaskId);
+    Task getTaskById(int taskId);
+
+    Epic getEpicById(int epicId);
+
+    Subtask getSubtaskById(int subtaskId);
 
     void updateTask(Task task);
 
@@ -34,6 +40,18 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
+    void removeAllTask();
+
+    void removeAllEpics();
+
+    void removeAllSubtasks();
+
+    void removeAll();
+
     List<Task> getHistory();
+
+    void addTaskToPrioritizedList(Task task);
+
+    List<Task> getPrioritizedTasks();
 
 }

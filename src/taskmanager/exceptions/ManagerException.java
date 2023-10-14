@@ -1,9 +1,9 @@
-package taskmanager.manager;
+package taskmanager.exceptions;
 
 
 public class ManagerException extends RuntimeException {
 
-    public ManagerException(String message) {
+    public ManagerException(final String message) {
         super(message);
     }
 }
