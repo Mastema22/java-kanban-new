@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class HistoryManagerTest {
     private HistoryManager historyManager;
-    private Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,0));
-    private Task task2 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,40));
-    private Task task3 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,50));
+    private final Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,0));
+    private final Task task2 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,40));
+    private final Task task3 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,50));
 
     @BeforeEach
     void beforeEach() {
