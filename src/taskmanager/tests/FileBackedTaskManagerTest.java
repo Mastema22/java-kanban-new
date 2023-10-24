@@ -1,12 +1,9 @@
 package taskmanager.tests;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import taskmanager.manager.FileBackedTasksManager;
-import taskmanager.manager.Managers;
 import taskmanager.tasks.Epic;
-import taskmanager.tasks.Status;
 import taskmanager.tasks.Subtask;
 import taskmanager.tasks.Task;
 
@@ -14,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,28 +18,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest<FileBackedTasksManager> {
+public class FileBackedTaskManagerTest extends TaskManagerTest {
     private final Path path = Path.of("manager.cvs");
     private final File file = new File(String.valueOf(path));
 
-    private final Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,0));
-    private final Epic epic = new Epic("Test addNewTask", "Test addNewTask description", 50, LocalDateTime.of(2023,10,14,12,30));
-    private final Subtask subtask = new Subtask("Test addNewTask", "Test addNewTask description", Status.NEW,
-            70, LocalDateTime.of(2023,10,14,12,35), 1);
-    @BeforeEach
-    public void beforeEach(){
-         taskManager = new FileBackedTasksManager(Managers.getDefaultHistory(),"manager.cvs");
-    }
+    private FileBackedTasksManager restoreBackedTasksManager;
 
     @AfterEach
     public void afterEach() {
         try {
             Files.delete(path);
-            taskManager.getTaskList().clear();
-            taskManager.getEpicList().clear();
-            taskManager.getSubtaskList().clear();
-            taskManager.getPrioritizedTasks().clear();
-            taskManager.getHistory().clear();
+            fileBackTaskManager.getTaskList().clear();
+            fileBackTaskManager.getEpicList().clear();
+            fileBackTaskManager.getSubtaskList().clear();
+            fileBackTaskManager.getPrioritizedTasks().clear();
+            fileBackTaskManager.getHistory().clear();
         } catch (IOException ex) {
             ex.getStackTrace();
         }
@@ -52,37 +41,44 @@ public class FileBackedTaskManagerTest extends InMemoryTaskManagerTest<FileBacke
     /*Пустой эпик без подзадач*/
     @Test
     public void save_loadFile_shouldSaveAndLoad() {
-        Task task1 = taskManager.addNewTask(task);
-        Epic epic1 = taskManager.addNewEpic(epic);
-        taskManager.loadFromFile(file);
-        HashMap<Integer, Task> taskHashMap = taskManager.getTaskList();
+        fileBackTaskManager.addNewTask(task);
+        fileBackTaskManager.addNewEpic(epic);
+        restoreBackedTasksManager = FileBackedTasksManager.loadFromFile(file);
+        HashMap<Integer, Task> taskHashMap = fileBackTaskManager.getTaskList();
         List<Task> taskList = new ArrayList<>(taskHashMap.values());
-        HashMap<Integer,Epic> epicHashMap = taskManager.getEpicList();
+        HashMap<Integer, Task> taskHashMap1 = restoreBackedTasksManager.getTaskList();
+        List<Task> taskList1 = new ArrayList<>(taskHashMap1.values());
+        HashMap<Integer, Epic> epicHashMap = fileBackTaskManager.getEpicList();
         List<Epic> epicList = new ArrayList<>(epicHashMap.values());
+        HashMap<Integer, Epic> epicHashMap1 = restoreBackedTasksManager.getEpicList();
+        List<Epic> epicList1 = new ArrayList<>(epicHashMap1.values());
 
-        assertEquals(List.of(task1), taskList);
-        assertEquals(List.of(epic1), epicList);
+        assertEquals(taskList, taskList1);
+        assertEquals(epicList, epicList1);
     }
 
-/*Пустой список задач*/
+    /*Пустой список задач*/
     @Test
     public void save_loadFile_shouldSaveAndLoadEmptyFile() {
-        taskManager.save();
-        taskManager.loadFromFile(file);
+        fileBackTaskManager.addNewTask(null);
+        fileBackTaskManager.addNewEpic(null);
+        fileBackTaskManager.addNewSubtask(null);
+        restoreBackedTasksManager = FileBackedTasksManager.loadFromFile(file);
 
-        assertEquals(Collections.EMPTY_MAP, taskManager.getTaskList());
-        assertEquals(Collections.EMPTY_MAP, taskManager.getEpicList());
-        assertEquals(Collections.EMPTY_MAP, taskManager.getSubtaskList());
+        assertEquals(Collections.EMPTY_MAP, restoreBackedTasksManager.getTaskList());
+        assertEquals(Collections.EMPTY_MAP, restoreBackedTasksManager.getEpicList());
+        assertEquals(Collections.EMPTY_MAP, restoreBackedTasksManager.getSubtaskList());
     }
 
-/*Пустой список истории*/
+    /*Пустой список истории*/
     @Test
-    public void save_loadFile_shouldSaveAndLoadEmptyHistory(){
-        taskManager.save();
-        taskManager.loadFromFile(file);
+    public void save_loadFile_shouldSaveAndLoadEmptyHistory() {
+        fileBackTaskManager.addNewTask(null);
+        fileBackTaskManager.addNewEpic(null);
+        fileBackTaskManager.addNewSubtask(null);
+        restoreBackedTasksManager = FileBackedTasksManager.loadFromFile(file);
 
-        assertEquals(Collections.EMPTY_LIST, taskManager.getHistory());
+        assertEquals(Collections.EMPTY_LIST, restoreBackedTasksManager.getHistory());
     }
-
 
 }

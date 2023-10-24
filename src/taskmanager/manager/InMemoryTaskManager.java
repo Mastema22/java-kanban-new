@@ -128,7 +128,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicHashMap.containsKey(epicId)) {
             Epic removeEpic = epicHashMap.get(epicId);
             ArrayList<Integer> subtaskIds = removeEpic.getSubtaskIds();
-
             for (int subtaskId : subtaskIds) {
                 Subtask subtask = subtaskHashMap.get(subtaskId);
                 subtaskHashMap.remove(subtask.getId());
@@ -144,14 +143,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeSubtaskById(int subtaskId) {
         if (subtaskHashMap.containsKey(subtaskId)) {
-            Subtask removeSubtask = subtaskHashMap.get(subtaskId);
-            Epic epicOfRemoveSubtask = epicHashMap.get(removeSubtask.getEpicId());
+            Subtask subtask = subtaskHashMap.get(subtaskId);
+            Epic epic = epicHashMap.get(subtask.getEpicId());
+            updateEpic(epic);
             subtaskHashMap.remove(subtaskId);
-            epicOfRemoveSubtask.getSubtaskIds().remove(subtaskId);
             historyManager.remove(subtaskId);
-            updateEpicStatus(epicOfRemoveSubtask.getId());
-            updateEpicTime(epicOfRemoveSubtask);
-            prioritizedTasks.remove(epicOfRemoveSubtask);
+            prioritizedTasks.remove(subtask);
 
         } else {
             System.out.println("Данной подзадачи нет!");
@@ -301,31 +298,32 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicHashMap.get(epicId);
         ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
 
+        boolean isNew = true;
+        boolean isDone = true;
+
         if (subtaskIds.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }
 
-        Status status = null;
         for (int subtaskId : subtaskIds) {
-            Subtask subtask = subtaskHashMap.get(subtaskId);
-
-            if (status == null) {
-                status = subtask.getStatus();
-                continue;
+            Status status = subtaskHashMap.get(subtaskId).getStatus();
+            if (status != Status.NEW) {
+                isNew = false;
             }
-
-            if (status.equals(subtask.getStatus())
-                    && !status.equals(Status.IN_PROGRESS)) {
-                continue;
+            if (status != Status.DONE) {
+                isDone = false;
             }
-
-            epic.setStatus(Status.IN_PROGRESS);
-            return;
         }
-
-        epic.setStatus(status);
+        if (isNew) {
+            epic.setStatus(Status.NEW);
+        } else if (isDone) {
+            epic.setStatus(Status.DONE);
+        } else {
+            epic.setStatus(Status.IN_PROGRESS);
+        }
     }
+
 
     private void updateEpicTime(Epic epic) {
         List<Subtask> subtasks = Collections.singletonList(getSubtasksOfEpic(epic));

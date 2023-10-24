@@ -4,24 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import taskmanager.manager.HistoryManager;
 import taskmanager.manager.InMemoryHistoryManager;
-import taskmanager.tasks.Status;
-import taskmanager.tasks.Task;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HistoryManagerTest {
-    private HistoryManager historyManager;
-    private final Task task = new Task("Test addNewTask", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,0));
-    private final Task task2 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,40));
-    private final Task task3 = new Task("Test addNewTask2", "Test addNewTask description", Status.NEW, 10, LocalDateTime.of(2023,10,14,12,50));
-
-    @BeforeEach
-    void beforeEach() {
-        historyManager = new InMemoryHistoryManager();
-    }
+public class HistoryManagerTest extends TaskManagerTest {
 
     @Test
     public void add_shouldAddTasksInHistory() {

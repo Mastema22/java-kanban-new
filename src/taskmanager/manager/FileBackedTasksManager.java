@@ -19,46 +19,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.pathFileName = Paths.get(fileName);
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), file.getPath());
-        if (Files.exists(Path.of(file.getPath()))) {
-            try {
-                String[] stringList = Files.readString(Path.of(file.getPath())).split("\n");
-                for (int i = 1; i < stringList.length - 1; i++) {
-                    if (!stringList[i].isBlank()) {
-                        Task task = CSVFormatter.fromString(stringList[i]);
-                        if (task.getClass() == Task.class) {
-                            fileBackedTasksManager.addNewTask(task);
-                        } else if (task.getClass() == Epic.class) {
-                            fileBackedTasksManager.addNewEpic((Epic) task);
-                        } else if (task.getClass() == Subtask.class) {
-                            fileBackedTasksManager.addNewSubtask((Subtask) task);
-                        }
-                    } else {
-
-                        for (int id : CSVFormatter.historyFromString(stringList[i + 1])) {
-                            if (taskHashMap.containsKey(id)) {
-                                historyManager.add(taskHashMap.get(id));
-                            } else if (subtaskHashMap.containsKey(id)) {
-                                historyManager.add(subtaskHashMap.get(id));
-                            } else {
-                                historyManager.add(epicHashMap.get(id));
-                            }
-                        }
-                    }
-                }
-
-            } catch (IOException e) {
-                throw new ManagerException("Ошибка загрузки данных!");
-            }
-        } else {
-            return FileBackedTasksManager.loadFromFile(file);
-        }
-
-        return fileBackedTasksManager;
-
-    }
-
     @Override
     public Task addNewTask(Task task) {
         super.addNewTask(task);
@@ -173,7 +133,47 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    public void save() {
+    public static FileBackedTasksManager loadFromFile(File file) {
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), file.getPath());
+        if (Files.exists(Path.of(file.getPath()))) {
+            try {
+                String[] stringList = Files.readString(Path.of(file.getPath())).split("\n");
+                for (int i = 1; i < stringList.length - 1; i++) {
+                    if (!stringList[i].isBlank()) {
+                        Task task = CSVFormatter.fromString(stringList[i]);
+                        if (task.getClass() == Task.class) {
+                            fileBackedTasksManager.addNewTask(task);
+                        } else if (task.getClass() == Epic.class) {
+                            fileBackedTasksManager.addNewEpic((Epic) task);
+                        } else if (task.getClass() == Subtask.class) {
+                            fileBackedTasksManager.addNewSubtask((Subtask) task);
+                        }
+                    } else {
+
+                        for (int id : CSVFormatter.historyFromString(stringList[i + 1])) {
+                            if (taskHashMap.containsKey(id)) {
+                                historyManager.add(taskHashMap.get(id));
+                            } else if (subtaskHashMap.containsKey(id)) {
+                                historyManager.add(subtaskHashMap.get(id));
+                            } else {
+                                historyManager.add(epicHashMap.get(id));
+                            }
+                        }
+                    }
+                }
+
+            } catch (IOException e) {
+                throw new ManagerException("Ошибка загрузки данных!");
+            }
+        } else {
+            return FileBackedTasksManager.loadFromFile(file);
+        }
+
+        return fileBackedTasksManager;
+
+    }
+
+    private void save() {
         try (FileWriter fileWriter = new FileWriter(pathFileName.toFile())) {
             HashMap<Integer, String> allTasks = new HashMap<>();
 
