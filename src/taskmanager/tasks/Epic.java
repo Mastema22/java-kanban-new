@@ -35,7 +35,7 @@ public class Epic extends Task {
         return endTime;
     }
 
-    public  void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         Epic.endTime = endTime;
     }
 
@@ -46,9 +46,9 @@ public class Epic extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status='" + getStatus() + '\'' +
-                ", start time='" + getStartTime() +'\'' +
-                ", duration='" + getDuration() +'\'' +
-                ", end time'" + getEndTime() +'\'' +
+                ", start time='" + getStartTime() + '\'' +
+                ", duration='" + getDuration() + '\'' +
+                ", end time'" + getEndTime() + '\'' +
                 '}';
     }
 

@@ -76,9 +76,9 @@ public class Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status='" + getStatus() + '\'' +
-                ", start time='" + getStartTime() +'\'' +
-                ", duration='" + getDuration() +'\'' +
-                ", end time'" + getEndTime() +'\'' +
+                ", start time='" + getStartTime() + '\'' +
+                ", duration='" + getDuration() + '\'' +
+                ", end time'" + getEndTime() + '\'' +
                 '}';
 
     }
@@ -98,7 +98,7 @@ public class Task {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = (int) (prime * result + id);
+        result = (prime * result + id);
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());

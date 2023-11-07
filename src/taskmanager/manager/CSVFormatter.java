@@ -13,10 +13,10 @@ public class CSVFormatter {
     public static String toString(Task task) {
         if (task.getClass() == Task.class) {
             return task.getId() + "," + TaskType.TASK + "," + task.getName() + "," + task.getStatus() + "," +
-                    task.getDescription() + "," + task.getDuration()  + "," + task.getStartTime() +  "\n";
+                    task.getDescription() + "," + task.getDuration() + "," + task.getStartTime() + "\n";
         } else if (task.getClass() == Epic.class) {
             return task.getId() + "," + TaskType.EPIC + "," + task.getName() + "," + task.getStatus() + ","
-                    + task.getDescription()  + "," + task.getDuration() + "," + task.getStartTime() + "\n";
+                    + task.getDescription() + "," + task.getDuration() + "," + task.getStartTime() + "\n";
         } else {
             Subtask subtask = (Subtask) task;
             return subtask.getId() + "," + TaskType.SUBTASK + "," + subtask.getName() + "," + subtask.getStatus() + "," +
@@ -31,7 +31,7 @@ public class CSVFormatter {
         String name = data[2];
         Status status = Status.valueOf(data[3]);
         String description = data[4];
-        Long duration = Long.parseLong(data[5]);
+        long duration = Long.parseLong(data[5]);
         LocalDateTime startTime = LocalDateTime.parse(data[6]);
         int epicId = 0;
         if (data.length == 8) {
@@ -39,13 +39,12 @@ public class CSVFormatter {
         }
         switch (type) {
             case TASK:
-                Task task = new Task(name, description, status, duration , startTime);
+                Task task = new Task(name, description, status, duration, startTime);
                 task.setId(id);
                 return task;
             case EPIC:
                 Epic epic = new Epic(name, description, duration, startTime);
                 epic.setId(id);
-                epic.getEndTime();
                 return epic;
             case SUBTASK:
                 Subtask subtask = new Subtask(name, description, status, duration, startTime, epicId);

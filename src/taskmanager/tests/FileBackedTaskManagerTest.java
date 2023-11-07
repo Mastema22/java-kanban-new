@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import taskmanager.manager.FileBackedTasksManager;
 import taskmanager.tasks.Epic;
-import taskmanager.tasks.Subtask;
 import taskmanager.tasks.Task;
 
 import java.io.File;
@@ -18,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileBackedTaskManagerTest extends TaskManagerTest {
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksManager> {
     private final Path path = Path.of("manager.cvs");
     private final File file = new File(String.valueOf(path));
 

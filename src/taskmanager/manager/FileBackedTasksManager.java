@@ -1,22 +1,24 @@
 package taskmanager.manager;
 
 import taskmanager.exceptions.ManagerException;
-import taskmanager.tasks.*;
+import taskmanager.tasks.Epic;
+import taskmanager.tasks.Subtask;
+import taskmanager.tasks.Task;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final Path pathFileName;
+    private final File file;
     final String HEADER = "id,name,status,description,epic";
 
     public FileBackedTasksManager(HistoryManager defaultHistory, String fileName) {
-        this.pathFileName = Paths.get(fileName);
+        super(historyManager);
+        this.file = new File(fileName);
     }
 
     @Override
@@ -173,8 +175,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     }
 
-    private void save() {
-        try (FileWriter fileWriter = new FileWriter(pathFileName.toFile())) {
+    public void save() {
+        try (FileWriter fileWriter = new FileWriter(file)) {
             HashMap<Integer, String> allTasks = new HashMap<>();
 
             HashMap<Integer, Task> tasks = super.getTaskList();
@@ -204,124 +206,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("Все задачи удалены!");
         }
-
     }
-
-    public static void main(String[] args) {
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(Managers.getDefaultHistory(), "manager.csv");
-
-        Task task1 = new Task("Задача1", "Описание", Status.NEW);
-        Task task2 = new Task("Задача2", "Описание1", Status.IN_PROGRESS);
-        Task task3 = new Task("Задача3", "Описание2", Status.IN_PROGRESS);
-
-        fileBackedTasksManager.addNewTask(task1);
-        fileBackedTasksManager.addNewTask(task2);
-        fileBackedTasksManager.addNewTask(task3);
-
-        Epic epic1 = new Epic("Эпик1", "Описание");
-        Epic epic2 = new Epic("Эпик2", "Описание");
-        Epic epic3 = new Epic("Эпик3", "Описание");
-
-        fileBackedTasksManager.addNewEpic(epic1);
-        fileBackedTasksManager.addNewEpic(epic2);
-        fileBackedTasksManager.addNewEpic(epic3);
-
-        Subtask subtask1 = new Subtask("subTaskName1", "subTaskDescription1", Status.NEW, epic1.getId());
-        Subtask subtask2 = new Subtask("subTaskName2", "subTaskDescription1", Status.IN_PROGRESS, epic2.getId());
-        Subtask subtask3 = new Subtask("subTaskName3", "subTaskDescription1", Status.NEW, epic3.getId());
-
-        fileBackedTasksManager.addNewSubtask(subtask1);
-        fileBackedTasksManager.addNewSubtask(subtask2);
-        fileBackedTasksManager.addNewSubtask(subtask3);
-
-        System.out.println("Task list:");
-        fileBackedTasksManager.getTaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        fileBackedTasksManager.getEpicList().forEach((key, value) -> System.out.println(key + " " + value));
-        fileBackedTasksManager.getSubtaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        System.out.println();
-
-        System.out.println("History:");
-        fileBackedTasksManager.getHistory().forEach(System.out::println);
-        System.out.println();
-
-        //fileBackedTasksManager.removeTaskById(task1.getId());
-        //fileBackedTasksManager.removeEpicById(epic2.getId());
-        //fileBackedTasksManager.removeAllTask();
-        //fileBackedTasksManager.removeAllEpics();
-        fileBackedTasksManager.removeAllSubtasks();
-        //fileBackedTasksManager.removeAll();
-
-
-        System.out.println("Task list:");
-        fileBackedTasksManager.getTaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        fileBackedTasksManager.getEpicList().forEach((key, value) -> System.out.println(key + " " + value));
-        fileBackedTasksManager.getSubtaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        System.out.println();
-
-        System.out.println("History:");
-        fileBackedTasksManager.getHistory().forEach(System.out::println);
-        System.out.println();
-
-        System.out.println("Restore file:");
-        File file = new File("manager.csv");
-        FileBackedTasksManager restoreBackedTasksManager = FileBackedTasksManager.loadFromFile(file);
-
-        restoreBackedTasksManager.getTaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        restoreBackedTasksManager.getEpicList().forEach((key, value) -> System.out.println(key + " " + value));
-        restoreBackedTasksManager.getSubtaskList().forEach((key, value) -> System.out.println(key + " " + value));
-        System.out.println();
-
-        System.out.println(compareTo(fileBackedTasksManager, restoreBackedTasksManager));
-
-    }
-
-    private static String compareTo(FileBackedTasksManager fileBackedTasksManager, FileBackedTasksManager restoreBackedTasksManager) {
-        boolean compareTask = false;
-        boolean compareEpic = false;
-        boolean compareSubtask = false;
-        boolean compareHistory = false;
-
-        HashMap<Integer, Task> taskList1 = fileBackedTasksManager.getTaskList();
-        HashMap<Integer, Task> taskList2 = restoreBackedTasksManager.getTaskList();
-
-        HashMap<Integer, Epic> epicList1 = fileBackedTasksManager.getEpicList();
-        HashMap<Integer, Epic> epicList2 = restoreBackedTasksManager.getEpicList();
-
-        HashMap<Integer, Subtask> subtaskList1 = fileBackedTasksManager.getSubtaskList();
-        HashMap<Integer, Subtask> subtaskList2 = restoreBackedTasksManager.getSubtaskList();
-
-        if (!taskList1.isEmpty() && !taskList2.isEmpty()) {
-            for (Task task : taskList1.values()) {
-                compareTask = taskList2.containsValue(task);
-            }
-        } else compareTask = true;
-
-        if (!epicList1.isEmpty() && !epicList2.isEmpty()) {
-            for (Epic epic : epicList1.values()) {
-                compareEpic = epicList2.containsValue(epic);
-            }
-        } else compareEpic = true;
-
-        if (!subtaskList1.isEmpty() && !subtaskList2.isEmpty()) {
-            for (Subtask subtask : subtaskList1.values()) {
-                compareSubtask = subtaskList2.containsValue(subtask);
-            }
-        } else compareSubtask = true;
-
-        if (!fileBackedTasksManager.getHistory().isEmpty() && !restoreBackedTasksManager.getHistory().isEmpty()) {
-            for (Task task : fileBackedTasksManager.getHistory()) {
-                compareHistory = restoreBackedTasksManager.getHistory().contains(task);
-            }
-        } else compareHistory = true;
-
-        if (compareTask && compareEpic && compareSubtask && compareHistory) {
-            return "Восстановление прошло успешно!";
-        } else {
-            return "Ошибка в восстановлении файла!";
-        }
-    }
-
 }
+
+
 
 
 

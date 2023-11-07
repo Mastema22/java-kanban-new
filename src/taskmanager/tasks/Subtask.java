@@ -3,7 +3,8 @@ package taskmanager.tasks;
 import java.time.LocalDateTime;
 
 public class Subtask extends Task {
-    private int epicId;
+    private final int epicId;
+
     public Subtask(String name, String description, Status status, int epicId) {
         super(name, description, status);
         this.epicId = epicId;
@@ -25,10 +26,10 @@ public class Subtask extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status='" + getStatus() + '\'' +
-                ", start time='" + getStartTime() +'\'' +
-                ", duration='" + getDuration() +'\'' +
-                ", end time'" + getEndTime() +'\'' +
-                ", epicId'" + getEpicId() +'\'' +
+                ", start time='" + getStartTime() + '\'' +
+                ", duration='" + getDuration() + '\'' +
+                ", end time'" + getEndTime() + '\'' +
+                ", epicId'" + getEpicId() + '\'' +
                 '}';
 
     }

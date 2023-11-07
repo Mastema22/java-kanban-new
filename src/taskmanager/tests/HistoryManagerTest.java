@@ -1,15 +1,17 @@
 package taskmanager.tests;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import taskmanager.manager.HistoryManager;
-import taskmanager.manager.InMemoryHistoryManager;
+import taskmanager.manager.*;
+
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HistoryManagerTest extends TaskManagerTest {
+public class HistoryManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+
+    HistoryManager historyManager = new InMemoryHistoryManager();
+
 
     @Test
     public void add_shouldAddTasksInHistory() {

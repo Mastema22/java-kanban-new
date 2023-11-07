@@ -40,5 +40,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="mock.server.mockserver.junit.jupiter" level="project" />
+    <orderEntry type="library" name="gson-2.10.1" level="project" />
   </component>
 </module>

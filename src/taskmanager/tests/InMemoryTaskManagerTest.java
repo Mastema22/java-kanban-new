@@ -2,16 +2,22 @@ package taskmanager.tests;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import taskmanager.manager.CSVFormatter;
+import taskmanager.manager.TaskManager;
 import taskmanager.tasks.Epic;
 import taskmanager.tasks.Status;
 import taskmanager.tasks.Subtask;
 import taskmanager.tasks.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InMemoryTaskManagerTest extends TaskManagerTest {
+public class InMemoryTaskManagerTest extends TaskManagerTest<TaskManager> {
+
 
     @AfterEach
     public void afterEach() {
@@ -246,6 +252,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest {
         taskManager.addNewEpic(epic);
         taskManager.addNewSubtask(subtask);
 
+
         HashMap<Integer, Subtask> subtaskHashMap = taskManager.getSubtaskList();
         List<Task> subtaskList = new ArrayList<>(subtaskHashMap.values());
 
@@ -254,6 +261,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest {
         assertEquals(epic.getId(), subtask.getEpicId());
         assertEquals(List.of(subtask), subtaskList);
         assertEquals(List.of(subtask.getId()), epic.getSubtaskIds());
+        assertEquals(CSVFormatter.toString(subtask), CSVFormatter.toString(taskManager.getSubtaskById(subtask.getId())));
     }
 
     @Test
